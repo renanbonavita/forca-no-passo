@@ -1,0 +1,261 @@
+/* Força na Caneta — estrutura inspirada no AuHug: telas por endereço, ação principal
+   presa ao rodapé, seções recolhíveis, contornos com contraste mínimo de 3:1 (WCAG 1.4.11),
+   foco visível e alvos de toque de pelo menos 44px. Contraste validado em tests/contraste.mjs. */
+:root{
+  --fundo:#FFFBF8;
+  --botao:#FFFFFF;
+  --borda:#EADBD2;
+  --texto:#2A1A14;
+  --suave:#6B5850;
+  --acento:#B23A1C;
+  --coral:#FF6B4A;
+  --coral-suave:#FFF0EA;
+  --coral-hover:#F45D3B;
+  /* Texto sobre o botão principal (troque para #FFFFFF se a cor principal for escura). */
+  --texto-botao:#2A1A14;
+  --sucesso:#1F6B4F;
+  --sucesso-suave:#EAF5F0;
+  --atencao:#FFF6DE;
+  /* Contorno de botões e campos: contraste mínimo de 3:1 com o fundo. */
+  --contorno:#9A8478;
+  --cor-clinica:var(--acento);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--fundo);color:var(--texto);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  line-height:1.45;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-text-size-adjust:100%;
+}
+[hidden]{display:none!important}
+.u-oculto{position:absolute;width:0;height:0;overflow:hidden}
+
+.tela{display:none;min-height:100vh;min-height:100dvh;
+  padding:max(20px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
+  flex-direction:column;max-width:560px;margin:0 auto}
+.tela.ativa{display:flex}
+
+button,a.botao{font:inherit;color:inherit;cursor:pointer}
+:focus{outline:none}
+:focus-visible{outline:3px solid var(--texto);outline-offset:3px;border-radius:6px}
+a{color:var(--acento)}
+.ic{width:24px;height:24px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ic-18{width:18px;height:18px}
+
+/* ---------- Início ---------- */
+.marca{font-size:1rem;font-weight:700;color:var(--texto);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.logo-marca{width:28px;height:28px;border-radius:7px}
+.logo-rodape{width:22px;height:22px;border-radius:5px;vertical-align:middle;margin:-3px 6px 0 0}
+.logo-sobre{width:64px;height:64px;border-radius:14px;margin-bottom:10px}
+/* "Usar sem internet": discreto, só no navegador. */
+.botao-instalar{margin-left:auto;white-space:nowrap;flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--borda);background:var(--botao);color:var(--suave);font:inherit;font-size:.9rem;font-weight:400;cursor:pointer}
+.selo-clinica{display:flex;align-items:center;gap:8px;font-size:.95rem;color:var(--suave)}
+.selo-clinica strong{color:var(--texto)}
+.selo-clinica img{border-radius:50%;object-fit:contain}
+
+.centro-inicio{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;text-align:center;padding:24px 0}
+.slogan{font-size:1rem;color:var(--suave);font-style:italic;line-height:1.4;margin:0 0 12px}
+.slogan span{display:block}
+.info-treino{font-size:1.05rem;color:var(--suave)}
+.info-treino strong{color:var(--texto)}
+/* A ação principal: grande, ocupa a largura e divide a altura da tela. */
+/* A ação principal: botão redondo de "início rápido", com anel de destaque.
+   O tamanho acompanha a altura da tela (entre 200px e 280px). */
+.bora{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:0 0 auto;
+  align-self:center;
+  width:clamp(200px,38vh,280px);width:clamp(200px,38dvh,280px);aspect-ratio:1;max-width:80vw;
+  background:var(--coral);color:var(--texto-botao);border:3px solid var(--acento);border-radius:50%;
+  box-shadow:0 0 0 12px var(--coral-suave);
+  padding:16px;
+}
+.bora:active{background:var(--coral-hover)}
+.bora-texto{font-size:3.2rem;font-weight:800;letter-spacing:.04em;line-height:1.05;white-space:nowrap}
+.bora-sub{font-size:1.05rem;font-weight:700;white-space:nowrap}
+.msg-hoje{font-weight:700;color:var(--sucesso)}
+.fraco{color:var(--suave)}
+
+.rodape{margin-top:20px;font-size:.95rem;color:var(--suave);text-align:center}
+.rodape p+p{margin-top:8px}
+.rodape a{color:var(--suave)}
+.links-rodape{font-size:.95rem}
+.links-rodape .it{white-space:nowrap}
+.links-rodape a{display:inline-block;padding:10px 2px}
+.rt{font-size:.85rem}
+
+/* ---------- Botões ---------- */
+.principal{
+  width:100%;background:var(--coral);color:var(--texto-botao);border:2px solid var(--acento);border-radius:18px;
+  padding:18px 20px;font-size:1.25rem;font-weight:700;min-height:68px
+}
+.principal:active{background:var(--coral-hover)}
+.secundario,.alternar{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  background:var(--botao);border:2px solid var(--contorno);border-radius:16px;
+  padding:12px 14px;font-size:1.1rem;font-weight:600;min-height:60px
+}
+.alternar[aria-pressed="true"]{border-color:var(--sucesso);background:var(--sucesso-suave);color:var(--sucesso)}
+.secundario:disabled,.alternar:disabled{opacity:.4;cursor:default}
+.voltar{
+  align-self:flex-start;background:none;border:2px solid var(--contorno);
+  border-radius:12px;padding:12px 18px;font-size:1.05rem;color:var(--suave);min-height:48px
+}
+.voltar.largo{align-self:stretch;width:100%;min-height:56px}
+.ouvir{display:inline-flex;align-items:center;gap:8px;background:none;border:2px solid var(--contorno);
+  border-radius:12px;padding:12px 16px;font-size:1.05rem;color:var(--suave);min-height:48px}
+.ouvir[aria-pressed="true"]{border-color:var(--acento);color:var(--texto)}
+.voltar,.ouvir{white-space:nowrap}
+.botao-link{display:inline-flex;align-items:center;justify-content:center;min-height:48px;border:2px solid var(--contorno);border-radius:12px;padding:10px 16px;font-weight:600;text-decoration:none;color:var(--texto);background:var(--botao);font-size:1rem}
+.botao-link.destaque{border-color:var(--acento);background:var(--coral-suave)}
+.botoes-linha{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.fechar{display:grid;place-items:center;width:44px;height:44px;flex:0 0 auto;background:none;border:0;border-radius:50%;color:var(--suave)}
+
+/* Ação presa ao rodapé visível: nunca exige rolar, mesmo com a barra do navegador. */
+.fixo-rodape{position:sticky;bottom:0;margin-top:auto;padding-top:16px;
+  padding-bottom:max(4px,env(safe-area-inset-bottom));
+  background:linear-gradient(to bottom,rgba(255,251,248,0),var(--fundo) 18px);
+  display:flex;flex-direction:column;gap:10px}
+
+/* ---------- Barra de cima (Encerrar + Voz) ---------- */
+.barra{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%}
+
+/* ---------- Treino ---------- */
+.tela-treino{gap:14px}
+.progresso-texto{display:flex;justify-content:space-between;align-items:baseline;font-size:1rem;margin-bottom:6px}
+.progresso-texto span{color:var(--suave);font-variant-numeric:tabular-nums}
+.trilho{height:8px;background:var(--borda);border-radius:999px;overflow:hidden}
+.trilho-cheio{height:100%;width:0;background:var(--acento);border-radius:999px}
+.midia{position:relative;aspect-ratio:16/10;background:var(--coral-suave);border-radius:18px;overflow:hidden;border:1px solid var(--borda)}
+.midia video,.midia img{width:100%;height:100%;display:block}
+.midia video{object-fit:cover}
+.midia img{object-fit:contain}
+.cronometro{position:absolute;right:10px;bottom:10px;min-width:96px;padding:0 14px;border-radius:16px;
+  background:var(--botao);border:2px solid var(--contorno);
+  font-size:3.2rem;font-weight:800;line-height:1.2;text-align:center;font-variant-numeric:tabular-nums}
+.cronometro.pausado{color:var(--suave)}
+.mov h1{font-size:1.6rem;line-height:1.2}
+.mov p{margin-top:6px;font-size:1.05rem}
+.alerta{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:var(--atencao);border:2px solid #B8901F;font-weight:700}
+.legenda{display:flex;align-items:flex-start;gap:10px;min-height:52px;padding:10px 12px;border-radius:12px;background:var(--botao);border:1px solid var(--borda);font-size:1.05rem;font-weight:700;line-height:1.35}
+.legenda .ic{color:var(--acento);margin-top:2px}
+.controles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.controles .alternar,.controles .alerta,.controles .legenda{grid-column:1/-1}
+
+/* ---------- Conclusão ---------- */
+.instrucao{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 4px}
+.instrucao h1{font-size:2.2rem;line-height:1.15;font-weight:800}
+.instrucao p{font-size:1.3rem;color:var(--suave);margin-top:16px}
+.selo-fim{display:grid;place-items:center;flex:0 0 auto;width:96px;height:96px;border-radius:22px;background:var(--coral-suave);border:2px solid var(--acento);color:var(--acento);margin-bottom:20px}
+.selo-fim .ic{width:55%;height:55%;stroke-width:2.4}
+.instrucao .msg-nivel{color:var(--sucesso);font-weight:700;font-size:1.1rem}
+.confete{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
+.caixa{background:var(--botao);border:2px solid var(--borda);border-radius:14px;padding:14px 16px}
+.caixa-topo{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.caixa h2{font-size:1.15rem}
+.caixa p{margin-top:6px;color:var(--suave)}
+.card-elastico .botao-link{margin-top:12px;width:100%}
+.patrocinio{margin-top:14px;font-size:.9rem;color:var(--suave);text-align:center}
+.patrocinio a{color:var(--suave)}
+.marcador{display:block;border:2px dashed var(--acento);border-radius:12px;padding:10px 12px;background:var(--botao);color:var(--acento);font-weight:700;font-size:.9rem;text-align:center}
+
+/* ---------- Sobre e Aviso (páginas de texto) ---------- */
+.texto{padding:24px 2px;font-size:1.08rem}
+.texto h1{font-size:1.6rem;margin-bottom:14px}
+.texto p+p,.texto ul+p,.texto p+ul{margin-top:10px}
+.texto ol,.texto ul{padding-left:22px}
+.texto li+li{margin-top:6px}
+.lista-cuidados{margin-top:14px}
+.lista-cuidados li{padding-left:2px}
+#aviso .texto{flex:1}
+.dica-secoes{margin:24px 0 10px;font-size:.95rem}
+.secao{border-top:1px solid var(--borda)}
+.secao:last-of-type{border-bottom:1px solid var(--borda)}
+.secao summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:10px 2px}
+.secao summary::-webkit-details-marker{display:none}
+.secao summary h2{margin:0;font-size:1.2rem;color:var(--texto)}
+.secao summary::after{content:"+";font-size:1.8rem;line-height:1;color:var(--suave);flex:0 0 auto;width:28px;text-align:center}
+.secao[open] summary::after{content:"−"}
+.secao > :not(summary){margin-bottom:12px}
+.secao[open]{padding-bottom:10px}
+.nivel-titulo{font-size:1.05rem;margin-top:14px;color:var(--acento)}
+.nivel-titulo:first-child{margin-top:4px}
+.aviso-inapp{background:var(--atencao);border:2px solid #B8901F;border-radius:12px;padding:12px 14px;font-weight:600}
+.opcao{display:flex;gap:12px;align-items:flex-start;margin-top:12px;font-size:1.05rem}
+.opcao input{width:24px;height:24px;margin-top:2px;accent-color:var(--acento);flex:0 0 auto}
+.rotulo-campo{display:block;margin-top:10px;font-size:.95rem;font-weight:600}
+.horarios{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.horarios .campo{margin-top:0}
+.campo{display:block;width:100%;margin-top:6px;padding:12px 14px;min-height:52px;font:inherit;color:var(--texto);
+  background:var(--botao);border:2px solid var(--contorno);border-radius:12px}
+.codigo{font-size:2rem;font-weight:800;letter-spacing:.08em;text-align:center;padding:10px;margin-top:10px;border-radius:12px;background:var(--coral-suave)}
+.erro{color:#A3241B;font-weight:700}
+.erro:empty,#copiado:empty{display:none}
+.faq h3{font-size:1.05rem;margin-top:16px}
+.faq h3:first-child{margin-top:4px}
+.faq p{color:var(--suave);margin-top:4px}
+
+/* Utilitários */
+.u-texto-menor{font-size:.95rem!important}
+.u-mt8{margin-top:8px!important}
+.u-mt14{margin-top:14px!important}
+
+/* Reduzir animações (opção do app ou do sistema) */
+html.reduzir-animacoes *,html.reduzir-animacoes *::before,html.reduzir-animacoes *::after{animation:none!important;transition:none!important}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Celulares estreitos */
+@media (max-width:360px){
+  .voltar,.ouvir{padding:9px 11px;font-size:.95rem;gap:6px}
+  .links-rodape{font-size:.8rem}
+  .marca{font-size:.92rem;white-space:nowrap}
+  .marca > span{display:none}
+  .links-rodape .logo-rodape{display:none}
+  .botao-instalar{padding:0 10px;font-size:.82rem;white-space:nowrap}
+  .rt{font-size:.78rem}
+  .bora-texto{font-size:2.6rem}
+}
+/* Celulares baixos (ex.: iPhone SE): início e treino cabem sem rolar. */
+@media (max-height:700px){
+  .tela{padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
+  .centro-inicio{gap:12px;padding:12px 0}
+  .slogan{font-size:.9rem;margin-bottom:6px}
+  .bora{width:clamp(150px,27dvh,220px);box-shadow:0 0 0 8px var(--coral-suave)}
+  .bora-texto{font-size:2.4rem}
+  .bora-sub{font-size:.95rem}
+  .tela-treino{gap:10px}
+  .cronometro{font-size:2.4rem;min-width:76px}
+  .mov h1{font-size:1.35rem}
+  .mov p{font-size:.98rem}
+  .secundario,.alternar{min-height:52px;padding:8px 12px}
+  .legenda{font-size:.98rem;min-height:44px;padding:8px 10px}
+  .instrucao h1{font-size:1.8rem}
+  .selo-fim{width:72px;height:72px;margin-bottom:14px}
+  .rodape{margin-top:8px}
+  .rodape p+p{margin-top:4px}
+  .links-rodape a{padding:8px 2px}
+}
+
+/* ---------- Teste do mês ---------- */
+.teste p{font-size:1.15rem}
+.relogio-teste{font-size:5.5rem;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;margin:20px 0;line-height:1}
+.contador{display:grid;grid-template-columns:72px 1fr 72px;align-items:center;gap:12px;margin-top:10px}
+.contador .secundario{font-size:2rem;min-height:72px;padding:0}
+.contador output{font-size:3.4rem;font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
+#link-teste{align-self:center}
+
+/* Telas muito baixas (ex.: iPhone SE com letra maior): o slogan sai para o BORA caber. */
+@media (max-height:620px){
+  .slogan{display:none}
+  .centro-inicio{gap:8px;padding:6px 0}
+  #link-teste{min-height:44px;padding:6px 14px}
+  .bora-texto{font-size:2.2rem}
+  .bora-sub{font-size:.8rem}
+}
+
+/* ---------- Termos ---------- */
+a.voltar{text-decoration:none;display:inline-flex;align-items:center}
+.termos h2{font-size:1.2rem;margin:26px 0 10px;color:var(--acento)}
+.termos ul{margin-top:8px}
+.marcador-inline{border:2px dashed var(--acento);border-radius:6px;padding:0 6px;color:var(--acento);font-weight:700}

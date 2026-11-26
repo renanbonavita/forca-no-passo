@@ -1,0 +1,6 @@
+{
+  "_leia_me": "Parceiros (clínicas de geriatria e fisioterapia, operadoras de saúde, prefeituras): link https://SEU-SITE/?c=ID. O id só pode ter letras minúsculas, números e hífen.",
+  "clinicas": [
+    { "id": "demo", "nome": "Clínica Exemplo", "logo": "clinicas/demo.svg", "cor": "#2F7D6D" }
+  ]
+}

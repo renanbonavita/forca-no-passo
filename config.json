@@ -1,0 +1,169 @@
+{
+  "_leia_me": "Força no Passo – treino de força e equilíbrio para 60+. Mesmo framework do Força na Caneta (veja FRAMEWORK.md). Linguagem neutra e respeitosa (nada de 'vovó', nada infantil).",
+  "produto": {
+    "id": "passo",
+    "nome": "Força no Passo",
+    "prefixo_codigo": "FNP",
+    "prefixos_aceitos": [],
+    "titulo_lembrete": "Treino Força no Passo – 5 min",
+    "descricao_lembrete": "Hora do treino de 5 minutos! Cadeira encostada na parede, uma toalha e um apoio firme por perto.",
+    "lembretes_padrao": [
+      "9:30"
+    ],
+    "duracao": {
+      "aquecimento": 40,
+      "exercicio": 35,
+      "descanso": 25,
+      "desaquecimento": 20,
+      "descanso_final": true,
+      "total_segundos": 300
+    },
+    "niveis": [
+      {
+        "nivel": 1,
+        "nome": "Primeiros passos",
+        "de": 1,
+        "ate": 8
+      },
+      {
+        "nivel": 2,
+        "nome": "Passo firme",
+        "de": 9,
+        "ate": 20
+      },
+      {
+        "nivel": 3,
+        "nome": "Passo forte",
+        "de": 21,
+        "ate": null
+      }
+    ],
+    "nomes_grupos": {
+      "extra": "Equilíbrio"
+    },
+    "cores": {
+      "principal": "#2B59A0",
+      "principal_hover": "#234B88",
+      "principal_suave": "#E8EFF8",
+      "acento": "#1C3F75",
+      "texto_botao": "#FFFFFF"
+    },
+    "escala_fonte": 1.12,
+    "voz_velocidade": 0.9,
+    "compartilhar": true,
+    "teste": {
+      "ativo": true,
+      "segundos": 30,
+      "intervalo_dias": 30
+    }
+  },
+  "textos": {
+    "rotulo_sessao": "Treino",
+    "bora_sub": "treino de 5 min",
+    "requisitos_inicio": "Cadeira, toalha e apoio firme.",
+    "segundo_do_dia": "Quer fazer mais um hoje? Só se estiver se sentindo bem.",
+    "varios_no_dia": "Hoje já foram {n} treinos. Que disposição!",
+    "titulo_fim": "Muito bem! {rotulo} nº {n} 🎉",
+    "confirmar_encerrar": "Encerrar o treino agora? Ele não vai entrar na contagem.",
+    "aquecimento_descricao": "Na cadeira, costas retas. Siga a voz: marcha leve, ombros e mãos.",
+    "ultimo_descanso_descricao": "Respire fundo. Já já vem o desaquecimento.",
+    "desaquecimento_descricao": "Na cadeira, respire e alongue. No final, levante devagar e espere um instante antes de sair andando.",
+    "teste_chamada": "📏 Fazer o Teste do mês",
+    "compartilhar_texto": "Encontrei um treino de força e equilíbrio de 5 minutos, grátis e sem cadastro, feito para quem tem 60 anos ou mais. Abra no celular e toque em BORA:",
+    "og_frase": "Força e equilíbrio para 60+.\n5 minutos por dia, em casa."
+  },
+  "responsavel_tecnico": {
+    "nome": "[NOME DO RESPONSÁVEL TÉCNICO]",
+    "cref": "[NÚMERO]-G/[UF]"
+  },
+  "responsavel_fisioterapia": {
+    "nome": "[NOME DO(A) FISIOTERAPEUTA]",
+    "crefito": "[NÚMERO]-F"
+  },
+  "slogan": "Força nas pernas, firmeza no passo.\nAutonomia para o dia a dia.",
+  "contato_email": "[seu-email-de-contato@exemplo.com]",
+  "mostrar_marcadores_de_lugar": true,
+  "patrocinio": {
+    "marca": "",
+    "link": "",
+    "texto": "Apoio"
+  },
+  "elastico": {
+    "link": "",
+    "a_partir_do_treino": 9,
+    "repetir_a_cada": 8,
+    "titulo": "Pronto para um desafio extra?",
+    "texto": "Um elástico de exercício leve deixa os movimentos mais fortes, com segurança.",
+    "botao": "Ver elásticos"
+  },
+  "analytics": {
+    "goatcounter": "",
+    "plausible_dominio": "",
+    "debug": false
+  },
+  "audio": {
+    "usar_mp3": false
+  },
+  "midia": {
+    "usar_videos": false
+  },
+  "falas": {
+    "aquecimento-1": "Vamos aquecer! Na cadeira, costas retas. Marcha leve, levantando os joelhos alternados.",
+    "aquecimento-2": "Agora gira os ombros pra trás, bem devagar.",
+    "aquecimento-3": "Abre e fecha as mãos. Respira fundo.",
+    "cadeira-alerta": "Cadeira encostada na parede e apoio firme por perto? Então vamos.",
+    "levanta-devagar": "Levanta devagar.",
+    "troca-lado": "Agora troca de lado.",
+    "ultimo-descanso": "Último descanso! Já já vem o desaquecimento.",
+    "desaquecimento-1": "Desaquecimento. Na cadeira, respira fundo pelo nariz e solta pela boca.",
+    "desaquecimento-2": "Entrelaça as mãos e estica os braços pra frente, alongando as costas.",
+    "desaquecimento-3": "Agora levanta devagar. Antes de sair andando, espera um instante em pé, com apoio.",
+    "a-seguir": "A seguir:"
+  },
+  "frases_durante": [
+    "Costas retas, ombros relaxados.",
+    "Respira! Não precisa prender o ar.",
+    "Muito bem. Devagar e com controle.",
+    "Cada repetição é força para o dia a dia.",
+    "Força nas pernas é passo firme na rua.",
+    "Isso! Seu corpo agradece.",
+    "Se precisar, use a versão mais fácil. Fazer é o que conta.",
+    "Olhar pra frente, postura firme.",
+    "No seu ritmo. Aqui não tem pressa.",
+    "Mais forte hoje do que ontem.",
+    "Movimento é saúde. Continue assim.",
+    "Barriga firme, respiração solta."
+  ],
+  "frases_levantar": [
+    "Levanta devagar, com calma e firmeza.",
+    "Senta com controle, sem se jogar.",
+    "Levantar da cadeira com facilidade é liberdade."
+  ],
+  "frases_objeto": [
+    "Segura firme a toalha, sem tensionar o pescoço.",
+    "Toalha esticada, costas trabalhando.",
+    "Quem diria que uma toalha ajudava tanto?"
+  ],
+  "frases_10s": [
+    "Mais 10 segundos. Você consegue.",
+    "Só mais 10! Respira.",
+    "Reta final: 10 segundos.",
+    "Dez segundos. Firme e sem pressa."
+  ],
+  "frases_descanso": [
+    "Descansa. Respira fundo e solta devagar.",
+    "Pausa merecida. Um gole de água vai bem.",
+    "Respira... ombros relaxados.",
+    "Descanse sentado ou com apoio."
+  ],
+  "frases_conclusao": [
+    "Treino feito! Cinco minutos de força e equilíbrio.",
+    "Muito bem! Seu corpo agradece.",
+    "Mais firme a cada treino. Parabéns!",
+    "Missão cumprida. Até o próximo treino.",
+    "Força nas pernas, segurança no passo.",
+    "Um treino de cada vez, e a autonomia agradece.",
+    "Agora um copo d'água pra fechar bem.",
+    "Constância é o segredo. Você está no caminho."
+  ]
+}

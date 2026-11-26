@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="Clínica Exemplo">
+  <circle cx="40" cy="40" r="38" fill="#2F7D6D"/>
+  <path d="M33 18h14v15h15v14H47v15H33V47H18V33h15z" fill="#fff"/>
+</svg>

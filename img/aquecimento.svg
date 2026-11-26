@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" font-family="Nunito, Arial, sans-serif" fill="#2A1A14">
+<rect width="480" height="300" fill="#E8EFF8"/>
+<g transform="translate(0 -48)"><g stroke="#2A1A14" stroke-width="8" stroke-linecap="round" fill="none">
+  <path d="M240 140 v55 h40 v60"/><path d="M240 160 l35 15"/></g><circle cx="240" cy="120" r="16" fill="#2A1A14"/></g>
+<rect x="0" y="222" width="480" height="78" fill="#000" opacity=".06"/>
+<text x="24" y="40" font-size="18" font-weight="800" fill="#1C3F75">AQUECIMENTO</text>
+<text x="24" y="282" font-size="16" fill="#6B5850">No seu ritmo</text>
+</svg>
