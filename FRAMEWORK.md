@@ -29,6 +29,13 @@ Este repositório é o **Força na Caneta**, mas o código serve para qualquer a
 }
 ```
 
+**Paleta completa (opcional):** além das cores acima, `cores` aceita `fundo`, `superficie`, `borda`, `texto`, `texto_suave`, `contorno` e `midia` (fundo da área do vídeo). Para as ilustrações provisórias, aceita também `chao` e `parede`. O que não vier fica com a cor padrão do `styles.css`. O `tests/contraste.mjs` confere a paleta inteira do produto.
+
+**Outros blocos opcionais do `config.json`:**
+- `previa`: `{ "titulo", "linha1", "linha2", "selo" }`, os textos da imagem de prévia do link (`tools/gerar-og.mjs`).
+- `placeholders`: `{ "aquecimento", "descanso", "desaquecimento" }`, os subtítulos das 3 ilustrações fixas.
+- `roteiro`: `{ "cenario", "modelo", "voz" }`, as orientações de gravação no `ROTEIRO-GRAVACAO.md`.
+
 - **`id` precisa ser diferente em cada produto.** Apps no mesmo domínio (ex.: `usuario.github.io/app-1` e `/app-2`) compartilham o armazenamento do navegador. O `id` separa as contagens. O service worker também separa os caches pelo endereço do app.
 - **Cores:** confira o contraste. Se a cor principal for escura, use `"texto_botao": "#FFFFFF"`. Rode `node tests/contraste.mjs` com as cores novas.
 - **Duração:** as falas programadas ("a seguir", "faltam 10 s", "troca de lado") tocam em momentos **proporcionais** à duração de cada etapa (`momentosDasFalas` em `js/logica.js`). Etapas curtas funcionam. Mesmo assim, deixe pelo menos **10 s de descanso** para dar tempo de trocar de posição.
@@ -45,11 +52,19 @@ Este repositório é o **Força na Caneta**, mas o código serve para qualquer a
 
 ## O bloco `textos` (gênero e vocabulário)
 
-`rotulo_sessao` ("Treino" ou "Pausa"), `bora_sub`, `requisitos_inicio`, `segundo_do_dia`, `varios_no_dia` (use `{n}`), `titulo_fim` (use `{rotulo}` e `{n}`), `confirmar_encerrar`, `aquecimento_descricao`, `ultimo_descanso_descricao`, `desaquecimento_descricao`. O que não vier no `config.json` usa o padrão do Força na Caneta.
+`rotulo_sessao` ("Treino" ou "Pausa"), `bora_sub`, `requisitos_inicio`, `selo_parceiro` ("Indicado por" / "Oferecido por"), `restaurar_um` e `restaurar_varios` (use `{n}` e `{prox}`), `segundo_do_dia`, `varios_no_dia` (use `{n}`), `titulo_fim` (use `{rotulo}` e `{n}`), `confirmar_encerrar`, `aquecimento_descricao`, `ultimo_descanso_descricao`, `desaquecimento_descricao`. O que não vier no `config.json` usa o padrão do Força na Caneta.
 
 ## Exercícios
 
 O formato é o mesmo de sempre. Para objetos, use **`usa_objeto: true`** e a lista **`frases_objeto`** no `config.json` (garrafa, elástico...). O campo antigo `usa_toalha` e a lista `frases_toalha` continuam funcionando.
+
+## Recursos opcionais e o `index.html`
+
+O Teste do mês e o Compartilhar precisam dos elementos correspondentes no `index.html` (copie do Força na Caneta ou do Força no Passo). Se um produto não usa esses recursos, pode deixá-los de fora: o motor ignora o que não encontrar.
+
+## Atualizar o motor de um produto
+
+Copie os arquivos de **motor** (tabela no topo) deste repositório para o do produto, **aumente a `VERSAO` do `sw.js`** e rode `npm test` e `npm run e2e`. Melhorias feitas no motor de um produto devem voltar para cá primeiro.
 
 ## Passo a passo para um produto novo
 

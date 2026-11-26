@@ -1,6 +1,6 @@
 // Service worker do framework (Força na Caneta e família): funciona offline.
 // Ao publicar mudanças, aumente a VERSAO para os celulares baixarem a versão nova.
-const VERSAO = 'v1';
+const VERSAO = 'v2';
 // O nome do cache inclui o endereço do app: vários apps no mesmo domínio
 // (ex.: usuario.github.io/app-1 e /app-2) não apagam os arquivos uns dos outros.
 const ESCOPO = new URL(self.registration.scope).pathname;

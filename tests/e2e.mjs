@@ -17,6 +17,7 @@ const PREFIXO = (P.prefixo_codigo || 'FNC').toUpperCase();
 const D = { aquecimento: 30, exercicio: 40, descanso: 20, desaquecimento: 30, ...(P.duracao || {}) };
 const TOTAL = D.total_segundos || 300;
 const MARCADORES = !!CFG.mostrar_marcadores_de_lugar;
+const DEMO = ((JSON.parse(readFileSync(new URL('clinicas.json', raiz), 'utf8')).clinicas || []).find((c) => c.id === 'demo') || {}).nome;
 const nTxt = (n) => `${R} nº ${n}`;
 
 const { chromium, devices } = createRequire(import.meta.url)('playwright');
@@ -40,15 +41,24 @@ try {
   await page.clock.install();
   await page.goto(BASE);
 
-  await page.getByRole('heading', { name: 'Antes de começar' }).waitFor();
+  await page.locator('#aviso.ativa').waitFor();
   assert.ok(!(await page.content()).match(/isen[çc][ãa]o de responsabilidade|assumo|assume a responsabilidade/i));
   ok('aviso aparece no primeiro acesso, sem cláusula de isenção');
 
-  await page.getByRole('button', { name: 'Entendi, bora!' }).click();
+  await page.locator('#btn-aceitar').click();
   await page.locator('#num-treino', { hasText: nTxt(1) }).waitFor();
   assert.ok((await page.locator('#btn-bora').innerText()).includes(TX.bora_sub || '5 min'));
   assert.ok(await page.locator('#botao-instalar').isVisible());
   ok(`início: BORA com "${TX.bora_sub || '5 min'}", ${nTxt(1)} e "Usar sem internet" no navegador`);
+
+  // Paleta do produto aplicada (config.json → produto.cores)
+  const hexRgb = (h) => `rgb(${h.match(/\w\w/g).map((x) => parseInt(x, 16)).join(', ')})`;
+  const C = P.cores || {};
+  const [bgBora, corBora, bgBody] = await page.evaluate(() => [getComputedStyle(document.getElementById('btn-bora')).backgroundColor, getComputedStyle(document.getElementById('btn-bora')).color, getComputedStyle(document.body).backgroundColor]);
+  if (C.principal) assert.equal(bgBora, hexRgb(C.principal));
+  if (C.texto_botao) assert.equal(corBora, hexRgb(C.texto_botao));
+  if (C.fundo) assert.equal(bgBody, hexRgb(C.fundo));
+  ok('cores do produto aplicadas no BORA e no fundo');
 
   const eventos = [];
   await page.exposeFunction('registrarEvento', (n) => eventos.push(n));
@@ -85,11 +95,14 @@ try {
   assert.equal(page.url(), BASE + '#fim');
   assert.ok((await page.locator('#titulo-fim').innerText()).includes(nTxt(1)));
   assert.equal(await page.evaluate(() => window.__fnc.store.get('treinos')), 1);
+  const ID = P.id || 'fnc';
+  assert.equal(await page.evaluate((id) => localStorage.getItem(`${id}:treinos`), ID), '1');
+  for (const outro of ['fnc', 'batente', 'passo'].filter((x) => x !== ID)) assert.equal(await page.evaluate((id) => localStorage.getItem(`${id}:treinos`), outro), null);
   assert.ok(eventos.includes('treino_iniciado') && eventos.includes('treino_concluido'));
   if (MARCADORES && !(CFG.patrocinio || {}).marca) assert.match(await page.locator('#patrocinio').innerText(), /ESPAÇO DO PATROCINADOR/);
   ok(`conclusão em ${TOTAL} s (#fim), contador = 1, eventos enviados`);
 
-  await page.getByRole('button', { name: 'Por hoje tá ótimo' }).click();
+  await page.locator('#btn-por-hoje').click();
   await page.getByText(TX.segundo_do_dia || 'Que tal o 2º treino do dia?').waitFor();
   await page.locator('#num-treino', { hasText: nTxt(2) }).waitFor();
   ok(`início mostra ${nTxt(2)} e sugere mais um no dia`);
@@ -105,28 +118,28 @@ try {
   ok('"voltar" do celular durante o treino pergunta, encerra e não conta');
 
   // Código de recuperação (seção da página Sobre)
-  await page.getByRole('link', { name: 'Meu código' }).click();
+  await page.locator('.links-rodape a[href="#sobre/codigo"]').click();
   await visivel(page, '#sobre');
   assert.equal(await page.locator('#codigo-texto').innerText(), `${PREFIXO}-1`);
   assert.match(await page.locator('#codigo-link').inputValue(), /#t=1$/);
   await page.locator('#codigo-entrada').fill(`${PREFIXO}-15`);
-  await page.getByRole('button', { name: 'Restaurar', exact: true }).click();
+  await page.locator('#btn-usar-codigo').click();
   assert.match(await page.locator('#restaurar-texto').innerText(), /\b15\b/);
-  await page.getByRole('button', { name: 'Sim, restaurar' }).click();
-  await page.getByRole('button', { name: '← Voltar' }).click();
+  await page.locator('#btn-restaurar-sim').click();
+  await page.locator('#sobre [data-voltar]').click();
   await page.locator('#num-treino', { hasText: nTxt(16) }).waitFor();
   ok(`código ${PREFIXO}-15 restaura (próximo: nº 16) e "← Voltar" leva ao início`);
 
   // Link #t=
   await page.goto(BASE + '#t=6');
   await page.locator('#restaurar-texto', { hasText: /\b6\b/ }).waitFor();
-  await page.getByRole('button', { name: 'Sim, restaurar' }).click();
+  await page.locator('#btn-restaurar-sim').click();
   await page.goto(BASE);
   await page.locator('#num-treino', { hasText: nTxt(7) }).waitFor();
   ok('link #t=6 pergunta e restaura');
 
   // Lembretes
-  await page.getByRole('link', { name: 'Lembretes' }).click();
+  await page.locator('.links-rodape a[href="#sobre/lembretes"]').click();
   assert.ok(await page.locator('#sobre-lembretes').evaluate((d) => d.open));
   const icsTexto = decodeURIComponent(await page.locator('#link-ics').getAttribute('href'));
   assert.match(icsTexto, /RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR/);
@@ -135,18 +148,19 @@ try {
 
   // Modo clínica
   await page.goto(BASE + '?c=demo');
-  await page.getByText('Indicado por').waitFor();
-  assert.equal(await page.locator('#nome-clinica').innerText(), 'Clínica Exemplo');
+  const SELO = TX.selo_parceiro || 'Indicado por';
+  await page.getByText(SELO).waitFor();
+  assert.equal(await page.locator('#nome-clinica').innerText(), DEMO);
   await page.goto(BASE);
-  await page.getByText('Indicado por').waitFor();
-  ok('modo clínica (?c=demo) aparece e fica guardado');
+  await page.getByText(SELO).waitFor();
+  ok(`modo parceiro (?c=demo) mostra "${SELO}" e fica guardado`);
 
   // Instalação no iPhone
-  await page.getByRole('button', { name: 'Usar sem internet' }).click();
+  await page.locator('#botao-instalar').click();
   await visivel(page, '#sobre');
   assert.ok(await page.locator('#sobre-instalar').evaluate((d) => d.open));
   assert.match(await page.locator('#sobre-instalar').innerText(), /Adicionar à Tela de Início/);
-  ok('"Usar sem internet" abre as instruções de instalação');
+  ok('botão de instalar abre as instruções de instalação');
 
   // Prévia da conclusão com Missão Elástico
   await page.goto(BASE + '?previa=fim');
@@ -180,13 +194,13 @@ try {
   }
   if (P.compartilhar) {
     await page.goto(BASE);
-    assert.ok(await page.locator('#link-compartilhar').isVisible());
+    await page.locator('#link-compartilhar').waitFor({ state: 'visible' });
     ok('"Compartilhar" aparece no rodapé');
   }
 
   // Termos
   await page.goto(BASE + 'termos.html');
-  await page.getByRole('heading', { name: 'Termos de uso e privacidade' }).waitFor();
+  await page.locator('.termos h1').waitFor();
   ok('termos abrem');
 
   // Offline
@@ -204,8 +218,8 @@ try {
   const p2 = await ig.newPage();
   vigiar(p2);
   await p2.goto(BASE);
-  await p2.getByRole('button', { name: 'Entendi, bora!' }).click();
-  await p2.getByRole('button', { name: 'Usar sem internet' }).click();
+  await p2.locator('#btn-aceitar').click();
+  await p2.locator('#botao-instalar').click();
   await p2.locator('#instalar-inapp', { hasText: 'navegador interno do Instagram' }).waitFor();
   ok('detecta navegador interno do Instagram e orienta abrir no Safari');
 
@@ -214,7 +228,7 @@ try {
   const p3 = await se.newPage();
   vigiar(p3);
   await p3.goto(BASE);
-  await p3.getByRole('button', { name: 'Entendi, bora!' }).click();
+  await p3.locator('#btn-aceitar').click();
   await visivel(p3, '#inicio');
   const caber = await p3.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1);
   assert.ok(caber, 'início rola no iPhone SE');

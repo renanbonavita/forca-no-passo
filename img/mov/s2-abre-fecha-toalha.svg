@@ -6,7 +6,7 @@
   <path d="M250 150 v110"/><path d="M250 205 h70 v55"/><path d="M250 205 v55"/><path d="M250 150 h0"/></g>
 <g stroke="#2A1A14" stroke-width="8" stroke-linecap="round" fill="none">
   <path d="M285 140 v55 h40 v60"/><path d="M285 160 l35 15"/></g><circle cx="285" cy="120" r="16" fill="#2A1A14"/>
-<path d="M300 172 q20 -14 42 0" stroke="#FF6B4A" stroke-width="10" fill="none" stroke-linecap="round"/></g>
+<path d="M300 172 q20 -14 42 0" stroke="#2B59A0" stroke-width="10" fill="none" stroke-linecap="round"/></g>
 <text x="24" y="40" font-size="18" font-weight="800" fill="#1C3F75">COSTAS</text>
 <text x="24" y="282" font-size="16" fill="#6B5850">Ilustração provisória · vídeo em gravação</text>
 </svg>

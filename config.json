@@ -165,5 +165,15 @@
     "Um treino de cada vez, e a autonomia agradece.",
     "Agora um copo d'água pra fechar bem.",
     "Constância é o segredo. Você está no caminho."
-  ]
+  ],
+  "placeholders": {
+    "aquecimento": "Na cadeira, no seu ritmo",
+    "descanso": "Respira fundo",
+    "desaquecimento": "Levante devagar, com apoio"
+  },
+  "roteiro": {
+    "cenario": "Sala ou cozinha de casa, fundo claro e liso, luz natural. Cadeira firme **com o encosto encostado na parede**, bancada da pia ou encosto sempre ao alcance, toalha visível. Piso seco, sem tapete solto.",
+    "modelo": "Pessoas reais de 60 a 80 anos, de gêneros e corpos variados, com roupa confortável e calçado fechado. Nos movimentos de equilíbrio, a mão **sempre** no apoio.",
+    "voz": "voz calma, clara e acolhedora, um pouco mais lenta, sem tom infantil (sempre a mesma pessoa)"
+  }
 }

@@ -8,6 +8,9 @@ import {
 } from './js/logica.js';
 
 const $ = (sel) => document.querySelector(sel);
+// Elementos de recursos opcionais (Teste do mês, Compartilhar) podem não existir no index.html de um produto.
+const NADA = new Proxy({}, { get: (_, k) => (k === 'classList' ? { add() {}, remove() {}, toggle() {} } : (typeof k === 'string' && /^(add|remove|set|append|replace|query|focus|scroll)/.test(k) ? () => NADA : undefined)), set: () => true });
+const $o = (sel) => document.querySelector(sel) || NADA;
 const sortearDe = (lista) => (lista && lista.length ? lista[Math.floor(Math.random() * lista.length)] : '');
 
 // ---------------- Armazenamento (sempre em try/catch) ----------------
@@ -40,6 +43,11 @@ const TEXTOS_PADRAO = {
   aquecimento_descricao: 'Sentada, costas retas. Siga a voz: marcha leve, ombros e mãos.',
   ultimo_descanso_descricao: 'Respire fundo. Já já vem o desaquecimento.',
   desaquecimento_descricao: 'Sente-se, respire e alongue. No final, levante devagar e fique um instante parada antes de sair andando.',
+  // Selo do modo parceiro (?c=id): "Indicado por Clínica X", "Oferecido por Empresa X"...
+  selo_parceiro: 'Indicado por',
+  // Pergunta ao restaurar pelo código. {n} = sessões feitas, {prox} = número da próxima.
+  restaurar_um: 'Restaurar para o treino 1? Sua contagem fica com 1 treino feito, e o próximo será o nº 2.',
+  restaurar_varios: 'Restaurar para o treino {n}? Sua contagem fica com {n} treinos feitos, e o próximo será o nº {prox}.',
   bora_sub: 'treino de 5 min',
   teste_chamada: 'Teste do mês: quantas vezes você senta e levanta em 30 segundos?',
   teste_instrucao: 'Sente no meio da cadeira encostada na parede, com os braços cruzados no peito. Quando a voz disser "valendo", levante e sente o máximo de vezes que conseguir, com segurança, em 30 segundos. Conte em voz alta.',
@@ -64,7 +72,7 @@ async function carregarJSON(url, padrao) {
 // ---------------- Telas ----------------
 const TELAS = ['aviso', 'inicio', 'treino', 'fim', 'sobre', 'teste'];
 function mostrar(nome) {
-  TELAS.forEach((t) => document.getElementById(t).classList.toggle('ativa', t === nome));
+  TELAS.forEach((t) => { const el = document.getElementById(t); if (el) el.classList.toggle('ativa', t === nome); });
   window.scrollTo(0, 0);
 }
 
@@ -77,7 +85,7 @@ function atualizarInicio() {
   if (hoje === 1) { msg.textContent = txt('segundo_do_dia'); msg.hidden = false; }
   else if (hoje > 1) { msg.textContent = txt('varios_no_dia', { n: hoje }); msg.hidden = false; }
   else msg.hidden = true;
-  const lt = $('#link-teste');
+  const lt = $o('#link-teste');
   const t = produto.teste || {};
   lt.hidden = !(t.ativo && testeDevido(store.get('testes', []), t.intervalo_dias || 30));
   lt.textContent = txt('teste_chamada');
@@ -141,6 +149,7 @@ async function configurarClinica() {
   clinica = lista.find((c) => c.id === id) || null;
   if (!clinica) return;
   $('#nome-clinica').textContent = clinica.nome;
+  $o('#selo-texto').textContent = txt('selo_parceiro');
   const logo = $('#logo-clinica');
   if (clinica.logo) { logo.src = clinica.logo; logo.alt = `Logo ${clinica.nome}`; } else logo.hidden = true;
   if (clinica.cor && /^#[0-9a-f]{3,8}$/i.test(clinica.cor)) document.documentElement.style.setProperty('--cor-clinica', clinica.cor);
@@ -500,7 +509,7 @@ function mostrarFim(n, novoNivel, { previa = false } = {}) {
     } else elPat.append(pat.marca);
     elPat.hidden = false;
   } else if (marcadores) {
-    elPat.append(marcador('ESPAÇO DO PATROCINADOR DE PROTEÍNA — preencher "patrocinio" (marca + link) em config.json'));
+    elPat.append(marcador('ESPAÇO DO PATROCINADOR — preencher "patrocinio" (marca + link) em config.json'));
     elPat.hidden = false;
   } else elPat.hidden = true;
 
@@ -673,25 +682,23 @@ function prepararSobre() {
   const caixa = $('#restaurar-caixa');
   if (restaurarPendente != null) {
     const n = restaurarPendente;
-    $('#restaurar-texto').textContent = (config.textos || {}).restaurar_pergunta
-      ? txt('restaurar_pergunta', { n, m: n + 1 })
-      : `Restaurar para o treino ${n}? Sua contagem fica com ${n} treino${n === 1 ? '' : 's'} feito${n === 1 ? '' : 's'}, e o próximo será o nº ${n + 1}.`;
+    $('#restaurar-texto').textContent = txt(n === 1 ? 'restaurar_um' : 'restaurar_varios', { n, prox: n + 1 });
     caixa.hidden = false;
   } else caixa.hidden = true;
 
   // Meu progresso (Teste do mês)
-  const sec = $('#sobre-progresso');
+  const sec = $o('#sobre-progresso');
   sec.hidden = !(produto.teste || {}).ativo;
   if (!sec.hidden) {
     const hist = store.get('testes', []);
-    const lista = $('#progresso-lista');
+    const lista = $o('#progresso-lista');
     lista.replaceChildren(...hist.slice().reverse().map((r) => {
       const li = document.createElement('li');
       const [a, m, d] = r.data.split('-');
       li.textContent = `${d}/${m}/${a}: ${r.n} vezes`;
       return li;
     }));
-    $('#progresso-resumo').textContent = hist.length
+    $o('#progresso-resumo').textContent = hist.length
       ? `Melhor resultado: ${Math.max(...hist.map((r) => r.n))} vezes. Último teste há ${diasDesde(hist.at(-1).data)} dia(s).`
       : 'Você ainda não fez o Teste do mês.';
   }
@@ -762,15 +769,15 @@ function prepararTeste() {
   TT.estado = 'intro';
   const hist = store.get('testes', []);
   TT.valor = hist.length ? hist.at(-1).n : 8;
-  $('#teste-instrucao').textContent = txt('teste_instrucao');
-  $('#teste-seguranca').textContent = txt('teste_seguranca');
-  $('#teste-pergunta').textContent = txt('teste_pergunta');
-  $('#teste-intro').hidden = false;
-  $('#teste-relogio').hidden = true;
-  $('#teste-resultado').hidden = true;
-  $('#teste-mensagem').hidden = true;
-  $('#teste-acao').textContent = 'Começar';
-  $('#teste-acao').disabled = false;
+  $o('#teste-instrucao').textContent = txt('teste_instrucao');
+  $o('#teste-seguranca').textContent = txt('teste_seguranca');
+  $o('#teste-pergunta').textContent = txt('teste_pergunta');
+  $o('#teste-intro').hidden = false;
+  $o('#teste-relogio').hidden = true;
+  $o('#teste-resultado').hidden = true;
+  $o('#teste-mensagem').hidden = true;
+  $o('#teste-acao').textContent = 'Começar';
+  $o('#teste-acao').disabled = false;
 }
 function pararTeste() {
   clearInterval(TT.timer); TT.timer = null;
@@ -783,16 +790,16 @@ function iniciarContagemTeste() {
   TT.ditos = new Set();
   const segundos = (produto.teste || {}).segundos || 30;
   TT.inicio = Date.now() + 3000; // 3, 2, 1
-  $('#teste-intro').hidden = true;
-  $('#teste-relogio').hidden = false;
-  $('#teste-acao').disabled = true;
+  $o('#teste-intro').hidden = true;
+  $o('#teste-relogio').hidden = false;
+  $o('#teste-acao').disabled = true;
   falar({ texto: 'Três, dois, um...' }, { interromper: true });
   const tique = () => {
     const d = (Date.now() - TT.inicio) / 1000;
-    if (d < 0) { $('#teste-relogio').textContent = String(Math.ceil(-d)); return; }
+    if (d < 0) { $o('#teste-relogio').textContent = String(Math.ceil(-d)); return; }
     if (!TT.ditos.has('valendo')) { TT.ditos.add('valendo'); bipe(1175, 200); falar({ texto: 'Valendo!' }, { interromper: true }); }
     const resta = Math.max(0, Math.ceil(segundos - d));
-    $('#teste-relogio').textContent = String(resta);
+    $o('#teste-relogio').textContent = String(resta);
     if (resta <= 10 && !TT.ditos.has('10')) { TT.ditos.add('10'); falar({ texto: 'Faltam 10 segundos.' }); }
     if (d >= segundos) {
       clearInterval(TT.timer); TT.timer = null;
@@ -800,11 +807,11 @@ function iniciarContagemTeste() {
       falar({ texto: 'Tempo! Pode sentar e respirar.' }, { interromper: true });
       soltarWakeLock();
       TT.estado = 'resultado';
-      $('#teste-relogio').hidden = true;
-      $('#teste-resultado').hidden = false;
-      $('#teste-valor').textContent = String(TT.valor);
-      $('#teste-acao').textContent = 'Salvar resultado';
-      $('#teste-acao').disabled = false;
+      $o('#teste-relogio').hidden = true;
+      $o('#teste-resultado').hidden = false;
+      $o('#teste-valor').textContent = String(TT.valor);
+      $o('#teste-acao').textContent = 'Salvar resultado';
+      $o('#teste-acao').disabled = false;
     }
   };
   tique();
@@ -818,15 +825,15 @@ function salvarTeste() {
   novo.push({ data: hoje, n: TT.valor });
   store.set('testes', novo.slice(-36));
   track('teste_concluido', { faixa: faixaTeste(TT.valor) });
-  const msg = $('#teste-mensagem');
+  const msg = $o('#teste-mensagem');
   if (anterior == null) msg.textContent = `Resultado guardado: ${TT.valor} vezes. Daqui a um mês tem mais!`;
   else if (TT.valor > anterior) msg.textContent = `${TT.valor} vezes: ${TT.valor - anterior} a mais que no último teste. Que evolução!`;
   else if (TT.valor === anterior) msg.textContent = `${TT.valor} vezes, igual ao último teste. Manter também é vitória!`;
   else msg.textContent = `${TT.valor} vezes. Tem dia que rende menos, e tudo bem. Siga treinando.`;
   msg.hidden = false;
-  $('#teste-resultado').hidden = true;
+  $o('#teste-resultado').hidden = true;
   TT.estado = 'salvo';
-  $('#teste-acao').textContent = 'Voltar ao início';
+  $o('#teste-acao').textContent = 'Voltar ao início';
 }
 
 // ---------------- Mandar para alguém (opcional) ----------------
@@ -931,14 +938,14 @@ function ligarEventos() {
   });
 
   // Teste do mês
-  $('#teste-acao').addEventListener('click', () => {
+  $o('#teste-acao').addEventListener('click', () => {
     if (TT.estado === 'intro') iniciarContagemTeste();
     else if (TT.estado === 'resultado') salvarTeste();
     else if (TT.estado === 'salvo') ir('', { substituir: true });
   });
-  $('#teste-menos').addEventListener('click', () => { TT.valor = Math.max(0, TT.valor - 1); $('#teste-valor').textContent = String(TT.valor); });
-  $('#teste-mais').addEventListener('click', () => { TT.valor = Math.min(60, TT.valor + 1); $('#teste-valor').textContent = String(TT.valor); });
-  $('#link-compartilhar').addEventListener('click', compartilhar);
+  $o('#teste-menos').addEventListener('click', () => { TT.valor = Math.max(0, TT.valor - 1); $o('#teste-valor').textContent = String(TT.valor); });
+  $o('#teste-mais').addEventListener('click', () => { TT.valor = Math.min(60, TT.valor + 1); $o('#teste-valor').textContent = String(TT.valor); });
+  $o('#link-compartilhar').addEventListener('click', compartilhar);
 
   // Sobre
   document.querySelectorAll('[data-voltar]').forEach((b) => b.addEventListener('click', voltar));
@@ -971,7 +978,11 @@ function ligarEventos() {
 
 // ---------------- Início ----------------
 // Cores do produto (config.json → produto.cores), aplicadas como variáveis CSS.
-const CORES_CSS = { principal: '--coral', principal_hover: '--coral-hover', principal_suave: '--coral-suave', acento: '--acento', texto_botao: '--texto-botao' };
+// Só "principal" é obrigatória; as demais são opcionais e, se ausentes, ficam as do styles.css.
+const CORES_CSS = {
+  principal: '--coral', principal_hover: '--coral-hover', principal_suave: '--coral-suave', acento: '--acento', texto_botao: '--texto-botao',
+  fundo: '--fundo', superficie: '--botao', borda: '--borda', texto: '--texto', texto_suave: '--suave', contorno: '--contorno', midia: '--midia',
+};
 function aplicarCores() {
   const c = produto.cores || {};
   Object.entries(CORES_CSS).forEach(([k, v]) => {
@@ -989,7 +1000,7 @@ async function iniciar() {
   aplicarCores();
   // Tamanho de letra do produto (ex.: 1.12 = 12% maior; tudo em rem acompanha).
   if (Number(produto.escala_fonte) > 0) document.documentElement.style.fontSize = `${Number(produto.escala_fonte) * 100}%`;
-  $('#it-compartilhar').hidden = !produto.compartilhar;
+  $o('#it-compartilhar').hidden = !produto.compartilhar;
   preencherRT();
   preencherTextosProduto();
   preencherSlogan();

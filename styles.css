@@ -10,6 +10,8 @@
   --acento:#B23A1C;
   --coral:#FF6B4A;
   --coral-suave:#FFF0EA;
+  /* Fundo da área do vídeo/ilustração no treino (padrão: a cor suave). */
+  --midia:var(--coral-suave);
   --coral-hover:#F45D3B;
   /* Texto sobre o botão principal (troque para #FFFFFF se a cor principal for escura). */
   --texto-botao:#2A1A14;
@@ -115,7 +117,7 @@ a{color:var(--acento)}
 /* Ação presa ao rodapé visível: nunca exige rolar, mesmo com a barra do navegador. */
 .fixo-rodape{position:sticky;bottom:0;margin-top:auto;padding-top:16px;
   padding-bottom:max(4px,env(safe-area-inset-bottom));
-  background:linear-gradient(to bottom,rgba(255,251,248,0),var(--fundo) 18px);
+  background:linear-gradient(to bottom,color-mix(in srgb,var(--fundo) 0%,transparent),var(--fundo) 18px);
   display:flex;flex-direction:column;gap:10px}
 
 /* ---------- Barra de cima (Encerrar + Voz) ---------- */
@@ -127,7 +129,7 @@ a{color:var(--acento)}
 .progresso-texto span{color:var(--suave);font-variant-numeric:tabular-nums}
 .trilho{height:8px;background:var(--borda);border-radius:999px;overflow:hidden}
 .trilho-cheio{height:100%;width:0;background:var(--acento);border-radius:999px}
-.midia{position:relative;aspect-ratio:16/10;background:var(--coral-suave);border-radius:18px;overflow:hidden;border:1px solid var(--borda)}
+.midia{position:relative;aspect-ratio:16/10;background:var(--midia);border-radius:18px;overflow:hidden;border:1px solid var(--borda)}
 .midia video,.midia img{width:100%;height:100%;display:block}
 .midia video{object-fit:cover}
 .midia img{object-fit:contain}

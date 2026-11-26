@@ -4,9 +4,9 @@
 
 ## Padrão técnico
 
-**Vídeos (24):** MP4 (H.264), vertical ou 4:3, 720p, **6 a 10 segundos em loop perfeito** (o fim emenda no começo), **sem som**, até 1,5 MB cada. Fundo claro e liso, luz natural, cadeira firme **com o encosto encostado na parede** e toalha visível. Modelo real de 40 a 59 anos, roupa confortável, sem foco em corpo "ideal". Mostre 2 ou 3 repetições em ritmo controlado. Grave também 1 repetição da **versão mais fácil** (opcional, para uma versão futura).
+**Vídeos (24):** MP4 (H.264), vertical ou 4:3, 720p, **6 a 10 segundos em loop perfeito** (o fim emenda no começo), **sem som**, até 1,5 MB cada. Sala ou cozinha de casa, fundo claro e liso, luz natural. Cadeira firme **com o encosto encostado na parede**, bancada da pia ou encosto sempre ao alcance, toalha visível. Piso seco, sem tapete solto. Pessoas reais de 60 a 80 anos, de gêneros e corpos variados, com roupa confortável e calçado fechado. Nos movimentos de equilíbrio, a mão **sempre** no apoio. Mostre 2 ou 3 repetições em ritmo controlado. Grave também 1 repetição da **versão mais fácil** (opcional, para uma versão futura).
 
-**Áudios:** MP3 mono, 64–96 kbps, voz feminina animada e acolhedora, **sem trilha**, 0,2 s de silêncio no começo e no fim. Normalize para −16 LUFS. O nome do arquivo tem que ser **exatamente** o indicado.
+**Áudios:** MP3 mono, 64–96 kbps, voz calma, clara e acolhedora, um pouco mais lenta, sem tom infantil (sempre a mesma pessoa), **sem trilha**, 0,2 s de silêncio no começo e no fim. Normalize para −16 LUFS. O nome do arquivo tem que ser **exatamente** o indicado.
 
 Depois de gravar: coloque os vídeos em `videos/` e os áudios em `audio/`, mude `"usar_videos": true` e `"usar_mp3": true` no `config.json` e aumente a `VERSAO` no `sw.js`.
 
@@ -41,7 +41,7 @@ Depois de gravar: coloque os vídeos em `videos/` e os áudios em `audio/`, mude
 
 ## 2. Áudios de cada movimento (48)
 
-Para cada movimento: uma **apresentação** (tocada no início dos 40 s) e um **"A seguir"** (tocado no descanso anterior).
+Para cada movimento: uma **apresentação** (tocada no início dos 35 s) e um **"A seguir"** (tocado no descanso anterior).
 
 | Arquivo | Texto |
 |---|---|
@@ -102,7 +102,7 @@ Para cada movimento: uma **apresentação** (tocada no início dos 40 s) e um **
 | `audio/aquecimento-2.mp3` | Agora gira os ombros pra trás, bem devagar. | Aquecimento, 10 s |
 | `audio/aquecimento-3.mp3` | Abre e fecha as mãos. Respira fundo. | Aquecimento, 18 s |
 | `audio/cadeira-alerta.mp3` | Cadeira encostada na parede e apoio firme por perto? Então vamos. | Antes de movimento com cadeira |
-| `audio/levanta-devagar.mp3` | Levanta devagar. | Ao passar de sentada para em pé / movimentos de levantar |
+| `audio/levanta-devagar.mp3` | Levanta devagar. | Ao levantar da cadeira / movimentos de levantar |
 | `audio/troca-lado.mp3` | Agora troca de lado. | Metade dos movimentos de um lado só |
 | `audio/ultimo-descanso.mp3` | Último descanso! Já já vem o desaquecimento. | Último descanso |
 | `audio/desaquecimento-1.mp3` | Desaquecimento. Na cadeira, respira fundo pelo nariz e solta pela boca. | Início do desaquecimento |

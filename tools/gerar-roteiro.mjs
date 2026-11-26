@@ -7,6 +7,14 @@ const cfg = JSON.parse(readFileSync(raiz + 'config.json', 'utf8'));
 const G = { pernas: 'Pernas', empurrar: 'Empurrar', costas: 'Costas', extra: 'Extra', ...((cfg.produto || {}).nomes_grupos || {}) };
 const N = Object.fromEntries(((cfg.produto || {}).niveis || [{ nivel: 1, nome: 'Esquentando' }, { nivel: 2, nome: 'Pegando no tranco' }, { nivel: 3, nome: 'Força Total' }]).map((n) => [n.nivel, n.nome]));
 const NOME = (cfg.produto || {}).nome || 'Força na Caneta';
+// Orientações de gravação por produto (config.json → "roteiro"), com os padrões do Força na Caneta.
+const R = {
+  cenario: 'Fundo claro e liso, luz natural, cadeira firme **com o encosto encostado na parede** e toalha visível.',
+  modelo: 'Modelo real de 40 a 59 anos, roupa confortável, sem foco em corpo "ideal".',
+  voz: 'voz feminina animada e acolhedora',
+  ...(cfg.roteiro || {}),
+};
+const SEG = ((cfg.produto || {}).duracao || {}).exercicio || 40;
 
 let md = `# Roteiro de gravação — ${NOME}
 
@@ -14,9 +22,9 @@ let md = `# Roteiro de gravação — ${NOME}
 
 ## Padrão técnico
 
-**Vídeos (24):** MP4 (H.264), vertical ou 4:3, 720p, **6 a 10 segundos em loop perfeito** (o fim emenda no começo), **sem som**, até 1,5 MB cada. Fundo claro e liso, luz natural, cadeira firme **com o encosto encostado na parede** e toalha visível. Modelo real de 40 a 59 anos, roupa confortável, sem foco em corpo "ideal". Mostre 2 ou 3 repetições em ritmo controlado. Grave também 1 repetição da **versão mais fácil** (opcional, para uma versão futura).
+**Vídeos (${exercicios.length}):** MP4 (H.264), vertical ou 4:3, 720p, **6 a 10 segundos em loop perfeito** (o fim emenda no começo), **sem som**, até 1,5 MB cada. ${R.cenario} ${R.modelo} Mostre 2 ou 3 repetições em ritmo controlado. Grave também 1 repetição da **versão mais fácil** (opcional, para uma versão futura).
 
-**Áudios:** MP3 mono, 64–96 kbps, voz feminina animada e acolhedora, **sem trilha**, 0,2 s de silêncio no começo e no fim. Normalize para −16 LUFS. O nome do arquivo tem que ser **exatamente** o indicado.
+**Áudios:** MP3 mono, 64–96 kbps, ${R.voz}, **sem trilha**, 0,2 s de silêncio no começo e no fim. Normalize para −16 LUFS. O nome do arquivo tem que ser **exatamente** o indicado.
 
 Depois de gravar: coloque os vídeos em \`videos/\` e os áudios em \`audio/\`, mude \`"usar_videos": true\` e \`"usar_mp3": true\` no \`config.json\` e aumente a \`VERSAO\` no \`sw.js\`.
 
@@ -29,7 +37,7 @@ exercicios.forEach((e, i) => {
   md += `| ${i + 1} | \`${e.video}\` | **${e.nome}** (nível ${e.nivel} · ${N[e.nivel]}) | ${G[e.grupo]} | ${e.descricao} | ${e.dica_seguranca}${e.unilateral ? ' Mostre os dois lados.' : ''} |\n`;
 });
 
-md += `\n## 2. Áudios de cada movimento (48)\n\nPara cada movimento: uma **apresentação** (tocada no início dos 40 s) e um **"A seguir"** (tocado no descanso anterior).\n\n| Arquivo | Texto |\n|---|---|\n`;
+md += `\n## 2. Áudios de cada movimento (${exercicios.length * 2})\n\nPara cada movimento: uma **apresentação** (tocada no início dos ${SEG} s) e um **"A seguir"** (tocado no descanso anterior).\n\n| Arquivo | Texto |\n|---|---|\n`;
 exercicios.forEach((e) => {
   md += `| \`${e.audio_intro}\` | ${e.fala_intro} |\n| \`${e.audio_proximo}\` | ${cfg.falas['a-seguir']} ${e.nome}. |\n`;
 });
@@ -37,7 +45,7 @@ exercicios.forEach((e) => {
 md += `\n## 3. Falas fixas\n\n| Arquivo | Texto | Quando toca |\n|---|---|---|\n`;
 const quando = {
   'aquecimento-1': 'Início do aquecimento (0 s)', 'aquecimento-2': 'Aquecimento, 10 s', 'aquecimento-3': 'Aquecimento, 18 s',
-  'cadeira-alerta': 'Antes de movimento com cadeira', 'levanta-devagar': 'Ao passar de sentada para em pé / movimentos de levantar',
+  'cadeira-alerta': 'Antes de movimento com cadeira', 'levanta-devagar': 'Ao levantar da cadeira / movimentos de levantar',
   'troca-lado': 'Metade dos movimentos de um lado só', 'ultimo-descanso': 'Último descanso',
   'desaquecimento-1': 'Início do desaquecimento', 'desaquecimento-2': 'Desaquecimento, 10 s', 'desaquecimento-3': 'Desaquecimento, 20 s',
   'a-seguir': 'Não precisa gravar sozinho (já entra nos arquivos prox-*)',
